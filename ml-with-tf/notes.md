@@ -435,3 +435,136 @@ can tune estimator and number of estimators
 >>> from sklearn.tree import DecisionTreeClassifier
 >>> model = AdaBoostClassifier(base_estimator = DecisionTreeClassifier(max_depth=2), n_estimators = 4)
 ```
+
+# Model Evaluation Metrics
+
+## Confusion matrix
+
+![alt](https://video.udacity-data.com/topher/2017/June/5944c743_confusion/confusion.png)
+For above its True Positives, True Negatives, False Positives, and False Negatives => 6,5,2,1
+
+**Type 1 and Type 2 Errors**
+Sometimes in the literature, you'll see False Positives and False Negatives as Type 1 and Type 2 errors. Here is the correspondence:
+
+**Type 1 Error (Error of the first kind, or False Positive)**: In the medical example, this is when we misdiagnose a healthy patient as sick.
+**Type 2 Error (Error of the second kind, or False Negative)**: In the medical example, this is when we misdiagnose a sick patient as healthy.
+
+## Accuracy
+
+$Accuracy = correctlyClassified/Total$
+![alt](https://video.udacity-data.com/topher/2018/May/5b09f078_screen-shot-2018-05-26-at-4.40.07-pm/screen-shot-2018-05-26-at-4.40.07-pm.png)
+Might not always be the right choice in the case where data can be skewed towards one direction .
+In these cases **precision** or **recall** might be better based on priorities and use case  
+
+$Precision = \frac{True Positive}{(True Positive + False Positive)}$
+
+
+$Recall = \frac{True Positive}{(True Positive + False Negative)}$
+
+specificity for negative vals (TN / (TN + FP)).
+
+## F1 Score
+Does a **harmonic mean** between Precision and Recall, smallest between precision and recall
+
+### **$F_\beta score$**
+
+$F1 Score=2*\frac{Precision*Recall}{Precision+Recall}$
+
+$F_\beta score = =(1+\beta^2)*\frac{Precision*Recall}{\beta^2*Precision+Recall}$
+
+Hence the boundaries of beta are between 0 and ∞.
+
+- If β=0, then we get precision.
+- If β=∞, then we get recall.
+- For other values of ,β, if they are close to 0, we get something close to precision, if they are large numbers, then we get something close to recall, and if β=1, then we get the harmonic mean of precision and recall.
+
+*Two commonly used values for β are 2, which weighs recall higher than precision, and 0.5, which weighs recall lower than precision.*
+
+## ROC (Receiver Operating Characteristic)
+![alt](https://video.udacity-data.com/topher/2018/May/5b0a175f_screen-shot-2018-05-26-at-7.24.13-pm/screen-shot-2018-05-26-at-7.24.13-pm.png)
+
+https://en.wikipedia.org/wiki/Receiver_operating_characteristic#:~:text=A%20receiver%20operating%20characteristic%20curve,which%20led%20to%20its%20name. 
+
+Calculate True Positive Rate
+![alt](https://wikimedia.org/api/rest_v1/media/math/render/svg/f02ea353bf60bfdd9557d2c98fe18c34cd8db835)
+
+False Positive Rate
+![alt](https://wikimedia.org/api/rest_v1/media/math/render/svg/422d06161964ca90602ec8712cd211cb0d80da19)
+
+Area under ROC curve for perfect split is 1 .
+Close to 0.5 => random model
+Around 0.8 -> Good split
+Area =1  => Perfect split
+
+Closer the roc split is to area of one the better the model is for classification
+
+
+# Regression Metrics
+
+## Mean Absolute Error
+
+![alt](https://www.gstatic.com/education/formulas2/397133473/en/mean_absolute_error.svg)
+
+or via sklearn mean_absolute_error . But its not differentiable
+![alt](https://video.udacity-data.com/topher/2018/May/5b0a1dbf_screen-shot-2018-05-26-at-7.53.22-pm/screen-shot-2018-05-26-at-7.53.22-pm.png)
+
+## Mean Square error
+![alt](https://www.gstatic.com/education/formulas2/397133473/en/mean_squared_error.svg)
+
+sklearn : mean_square_error
+ ![alt](https://video.udacity-data.com/topher/2018/May/5b0a1e3a_screen-shot-2018-05-26-at-7.55.02-pm/screen-shot-2018-05-26-at-7.55.02-pm.png)
+## R2 Score
+
+![alt](https://www.gstatic.com/education/formulas2/397133473/en/coefficient_of_determination.svg)
+
+![alt](https://video.udacity-data.com/topher/2018/May/5b0a1e5b_screen-shot-2018-05-26-at-7.55.22-pm/screen-shot-2018-05-26-at-7.55.22-pm.png)
+Bad model ~ zero
+Good model close to 1 (as mse of regression model is a lot smaller than mse of the simple model (guessing avg of the values of the points) )
+
+r2_score in sklearn
+
+# Training and Tuning
+Model complexity Graph
+![alt](https://d17h27t6h515a5.cloudfront.net/topher/2017/July/596d4dd2_model-complexity-graph/model-complexity-graph.png)
+
+**K Fold Cross Validaiton**
+**Learning Curves**
+
+![alt](https://video.udacity-data.com/topher/2017/June/594dbe26_learning-curves/learning-curves.png)
+
+![alt](https://video.udacity-data.com/topher/2017/June/5952e130_learning-curves/learning-curves.png)
+
+We can observe from the curves that:
+
+- The Logistic Regression model has a low training and testing score.
+- The Decision Tree model has a high training and testing score.
+- The Support Vector Machine model has a high training score, and a low testing score.
+
+From here, we can determine that the Logistic Regression model underfits, the SVM model overfits, and the Decision Tree model is just right.
+![alt](https://video.udacity-data.com/topher/2017/June/5952e5bd_models/models.png)
+
+* The Logistic Regression model uses a line, which is too simplistic. It doesn't do very well on the training set. Thus, it underfits.
+* The Decision Tree model uses a square, which is a pretty good fit, and generalizes well. Thus, this model is good.
+* The Support Vector Machine model actually draws a tiny circle around each point. This is clearly just memorizing the training set, and won't generalize well. Thus, it overfits.
+
+## Grid Search
+ 
+```python
+from sklearn.model_selection import GridSearchCV`
+
+parameters = {'kernel':['poly', 'rbf'],'C':[0.1, 1, 10]}
+
+# create a scorer
+from sklearn.metrics import make_scorer
+from sklearn.metrics import f1_score
+scorer = make_scorer(f1_score)
+# Create the object.
+grid_obj = GridSearchCV(clf, parameters, scoring=scorer)
+# Fit the data
+grid_fit = grid_obj.fit(X, y)
+# Get best estimator
+best_clf = grid_fit.best_estimator_
+
+```
+
+https://knowledge.udacity.com/questions/101453#105778 
