@@ -141,5 +141,14 @@ We change $w_i$ :
     - $y-\hat{y}=1$ if positive
     - $y-\hat{y}=-1$ if negative
 
-## Continuous Perceptrons
+## Gradient descent
+Also another name for rate of change of slope . https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/gradient-and-directional-derivatives/v/gradient , basicallya derivative of $f'(x)$ (ie slope at point x)
 
+### Caveats
+Since the weights will just go wherever the gradient takes them, they can end up where the error is low, but not the lowest. These spots are called local minima. If the weights are initialized with the wrong values, gradient descent could lead the weights into a local minimum, illustrated below.
+
+![ways to repvent](https://video.udacity-data.com/topher/2017/January/587c5ebd_local-minima/local-minima.png)
+
+This can be avoided by [momentum](https://distill.pub/2017/momentum/) also implemented in libs like pytorch https://pytorch.org/docs/stable/generated/torch.optim.SGD.html
+
+### The Math
